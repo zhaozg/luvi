@@ -20,7 +20,10 @@ else (WithSharedPCRE)
     SET(PCRE_DIR $ENV{PCRE_DIR})
   endif ()
 
-  include_directories(${CMAKE_BINARY_DIR}/deps/pcre)
+  include_directories(
+    ${PCRE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}/pcre.dir
+  )
   add_subdirectory(${PCRE_DIR} pcre.dir)
   message("Enabling Static PCRE")
   list(APPEND EXTRA_LIBS pcre)
