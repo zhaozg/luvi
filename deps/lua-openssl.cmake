@@ -1,11 +1,28 @@
 set(LUA_OPENSSL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps/lua-openssl)
+if(DEFINED ENV{LUA_OPENSSL_DIR})
+  set(LUA_OPENSSL_DIR $ENV{LUA_OPENSSL_DIR})
+endif()
 
 include_directories(
   ${LUA_OPENSSL_DIR}/deps
   ${LUA_OPENSSL_DIR}/src
 )
 
+add_definitions(
+  -DCOMPAT52_IS_LUAJIT
+)
+if(WithCustomExtend)
+  add_definitions(
+    -DCOMPAT52_IS_LUAJIT
+    -DHAVE_USER_CUSTOME="custom.h"
+  )
+endif()
+
 if(WIN32)
+  add_definitions(
+    -DWIN32_LEAN_AND_MEAN
+    -D_CRT_SECURE_NO_WARNINGS
+  )
 else()
   find_package(Threads)
   add_definitions(-DPTHREADS)
@@ -57,7 +74,11 @@ set_target_properties(lua_openssl PROPERTIES
 if (WithSharedOpenSSL)
   target_link_libraries(lua_openssl ssl crypto)
 else (WithSharedOpenSSL)
-  target_link_libraries(lua_openssl openssl)
+  if(WithOpenSSLExtends)
+    target_link_libraries(lua_openssl openssl_extends)
+  else()
+    target_link_libraries(lua_openssl openssl)
+  endif()
 endif (WithSharedOpenSSL)
 
 set(EXTRA_LIBS ${EXTRA_LIBS} lua_openssl)

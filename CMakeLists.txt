@@ -25,20 +25,8 @@ IF("${isSystemDir}" STREQUAL "-1")
    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 ENDIF("${isSystemDir}" STREQUAL "-1")
 
-if(MSVC)
-  # Statically build against C runtime (use the right version for Release/Debug)
-  set(CompilerFlags
-        CMAKE_CXX_FLAGS
-        CMAKE_CXX_FLAGS_DEBUG
-        CMAKE_CXX_FLAGS_RELEASE
-        CMAKE_C_FLAGS
-        CMAKE_C_FLAGS_DEBUG
-        CMAKE_C_FLAGS_RELEASE
-        )
-  foreach(CompilerFlag ${CompilerFlags})
-    string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-  endforeach()
-endif()
+include(deps/static.cmake)
+include(deps/portable.cmake)
 
 if (EXISTS "VERSION")
   file (STRINGS "VERSION" LUVI_VERSION)
@@ -69,6 +57,7 @@ option(WithPackageDEB "Build DEB package." OFF)
 option(WithPackageRPM "Build RPM package." OFF)
 option(WithPackageNSIS "Build NSIS package." OFF)
 option(WithPackageBUNDLE "Build OSX bundle." OFF)
+option(WithCustomExtend "Build Custom Extend." OFF)
 
 find_package(Threads)
 
@@ -91,19 +80,34 @@ if (WithSharedLibluv)
 else (WithSharedLibluv)
   # Build luv as static library insteas as module
   set(BUILD_MODULE OFF CACHE STRING "Build luv as static library")
-  include_directories(deps/luv/src)
-  include_directories(deps/luv/deps/libuv/include)
+
+  set(LUV_DIR deps/luv)
+  if(DEFINED ENV{LUV_DIR})
+    set(LUV_DIR $ENV{LUV_DIR})
+  endif()
+
+  include_directories(${LUV_DIR}/src)
+  IF(DEFINED ENV{LIBUV_DIR})
+    include_directories($ENV{LIBUV_DIR}/include)
+  ELSE()
+    include_directories(${LUV_DIR}/deps/libuv/include)
+  ENDIF()
   if (WITH_LUA_ENGINE STREQUAL Lua)
-    include_directories(deps/luv/deps/lua/src)
+    include_directories(${LUV_DIR}/deps/lua/src)
     set(LUVI_LIBRARIES luv lualib uv)
   else()
-    include_directories(deps/luv/deps/luajit/src)
+    IF(DEFINED ENV{LUAJIT_DIR})
+      SET(LUAJIT_DIR $ENV{LUAJIT_DIR})
+    ELSE()
+      SET(LUAJIT_DIR ${LUV_DIR}/deps/luajit)
+    ENDIF()
+    include_directories(${LUAJIT_DIR}/src)
     set(LUVI_LIBRARIES luv luajit-5.1 uv)
   endif()
-  add_subdirectory(deps/luv)
+  add_subdirectory(${LUV_DIR} luv.dir)
 endif (WithSharedLibluv)
 
-set(LUA_COMPAT53_DIR deps/luv/deps/lua-compat-5.3)
+set(LUA_COMPAT53_DIR ${LUV_DIR}/deps/lua-compat-5.3)
 if($ENV{LUA_COMPAT53_DIR})
   set(LUA_COMPAT53_DIR $ENV{LUA_COMPAT53_DIR})
 endif()
@@ -125,6 +129,28 @@ if (WithZLIB)
   include(deps/zlib.cmake)
 endif (WithZLIB)
 
+if (WithCustomExtend)
+  set(custom custom/luvi_custom.c)
+  if (MSVC)
+    set(custom ${custom} 
+      custom/winreg/src/l52util.c
+      custom/winreg/src/luawin_dllerror.c
+      custom/winreg/src/lua_int64.c
+      custom/winreg/src/lua_mtutil.c
+      custom/winreg/src/lua_tstring.c
+      custom/winreg/src/winreg.c
+      custom/winreg/src/win_privileges.c
+      custom/winreg/src/win_registry.c
+      custom/winreg/src/win_trace.c
+    )
+  endif()
+  include_directories(deps/lua-openssl/deps/lua-compat/c-api)
+  add_definitions(
+    -DWITH_CUSTOM
+    -DLUA_COMPAT53="c-api/compat-5.3.h"
+  )
+endif (WithCustomExtend)
+
 add_definitions( -DLUVI_VERSION="${LUVI_VERSION}" )
 
 if(MSVC)
@@ -145,11 +171,13 @@ endif ()
 
 lua_add_executable(luvi
   ${winsvc}
+  ${custom}
   src/main.c
   src/luvi_compat.c
   src/lua/init.lua
   src/lua/luvipath.lua
   src/lua/luvibundle.lua
+  custom/luvi_custom.c
 )
 
 if(APPLE)
@@ -164,7 +192,20 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
   set(EXTRA_LIBS ${EXTRA_LIBS} rt)
 endif()
 
-target_link_libraries(luvi ${LUVI_LIBRARIES} ${EXTRA_LIBS} ${CMAKE_THREAD_LIBS_INIT})
+if("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
+  set(EXTRA_LIBS ${EXTRA_LIBS} iconv)
+endif()
+
+message("EXTRA_LIBS ${EXTRA_LIBS}")
+message("LUVI_LIBRARIES ${LUVI_LIBRARIES}")
+message("CMAKE_THREAD_LIBS_INIT ${CMAKE_THREAD_LIBS_INIT}")
+target_link_libraries(luvi ${EXTRA_LIBS} ${LUVI_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+if(${CMAKE_C_COMPILER_ID} STREQUAL GNU)
+  set_target_properties(luvi PROPERTIES
+    LINK_FLAGS "-static-libgcc"
+    LINK_DEPENDS_NO_SHARED ON
+  )
+endif()
 
 ###############################################################################
 ## Installation Targets

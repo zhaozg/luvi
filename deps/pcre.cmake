@@ -15,8 +15,13 @@ else (WithSharedPCRE)
   SET(PCRE_SUPPORT_UTF ON CACHE BOOL
       "Enable support for Unicode Transformation Format (UTF-8/UTF-16/UTF-32) encoding.")
 
+  SET(PCRE_DIR deps/pcre)
+  if (DEFINED ENV{PCRE_DIR})
+    SET(PCRE_DIR $ENV{PCRE_DIR})
+  endif ()
+
   include_directories(${CMAKE_BINARY_DIR}/deps/pcre)
-  add_subdirectory(deps/pcre)
+  add_subdirectory(${PCRE_DIR} pcre.dir)
   message("Enabling Static PCRE")
   list(APPEND EXTRA_LIBS pcre)
   add_definitions(-DPCRE_STATIC)
@@ -24,3 +29,4 @@ endif (WithSharedPCRE)
 
 add_definitions(-DWITH_PCRE)
 include(deps/lrexlib.cmake)
+

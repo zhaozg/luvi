@@ -1,24 +1,38 @@
-[submodule "deps/lua-openssl"]
-	path = deps/lua-openssl
-	url = https://github.com/zhaozg/lua-openssl.git
 [submodule "deps/openssl"]
 	path = deps/openssl
-	url = https://github.com/luvit/openssl.git
-[submodule "deps/luv"]
-	path = deps/luv
-	url = https://github.com/luvit/luv.git
+	url = https://github.com/zhaozg/openssl.git
+	ignore = untracked
+[submodule "deps/lua-openssl"]
+	path = deps/lua-openssl
+	url = https://github.com/zhaozg/lua-openssl.git	
 [submodule "deps/zlib"]
 	path = deps/zlib
-	url = https://github.com/luvit/zlib.git
+	url = https://github.com/madler/zlib.git
+	ignore = untracked
 [submodule "deps/lua-zlib"]
 	path = deps/lua-zlib
 	url = https://github.com/brimworks/lua-zlib.git
+[submodule "deps/pcre"]
+	path = deps/pcre
+	url = https://github.com/svn2github/pcre.git
 [submodule "deps/lrexlib"]
 	path = deps/lrexlib
 	url = https://github.com/rrthomas/lrexlib.git
-[submodule "deps/pcre"]
-	path = deps/pcre
-	url = https://github.com/luvit/pcre.git
 [submodule "deps/lpeg"]
 	path = deps/lpeg
-	url = https://github.com/luvit/lpeg.git
+	url = https://github.com/zhaozg/lpeg.git
+[submodule "deps/luv"]
+	path = deps/luv
+	url = https://github.com/luvit/luv.git
+[submodule "custom/winreg"]
+	path = custom/winreg
+	url = https://github.com/zhaozg/lua-winreg.git
+[submodule "custom/ipc"]
+	path = custom/ipc
+	url = https://github.com/zhaozg/lua-luaipc.git
+[submodule "custom/sqlitext"]
+	path = custom/sqlitext
+	url = https://github.com/zhaozg/sqlitext.git
+[submodule "custom/cmsgpack"]
+	path = custom/cmsgpack
+	url = https://github.com/antirez/lua-cmsgpack.git

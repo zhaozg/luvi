@@ -1,4 +1,7 @@
 set(LREXLIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps/lrexlib)
+if(DEFINED ENV{LREXLIB_DIR})
+  set(LREXLIB_DIR $ENV{LREXLIB_DIR})
+endif()
 
 include_directories(
   ${LREXLIB_DIR}/src

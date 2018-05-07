@@ -5,6 +5,9 @@ if (WithSharedLPEG)
   set(EXTRA_LIBS ${EXTRA_LIBS} ${LPEGLIB})
 else (WithSharedPCRE)
   set(LPEGLIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps/lpeg)
+  if(DEFINED ENV{LPEGLIB_DIR})
+    set(LPEGLIB_DIR $ENV{LPEGLIB_DIR})
+  endif()
 
   include_directories(
     ${LPEGLIB_DIR}
