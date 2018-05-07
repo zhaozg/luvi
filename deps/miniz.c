@@ -889,6 +889,13 @@ typedef unsigned char mz_validate_uint64[sizeof(mz_uint64)==8 ? 1 : -1];
   #else
     #define __forceinline
   #endif
+#else
+  #if defined(__MINGW32__) || defined(__MINGW64__)
+    #ifndef __cplusplus
+      #undef __forceinline
+      #define __forceinline inline
+    #endif
+  #endif
 #endif
 
 #ifdef __cplusplus
