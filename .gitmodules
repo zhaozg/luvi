@@ -36,3 +36,6 @@
 [submodule "custom/cmsgpack"]
 	path = custom/cmsgpack
 	url = https://github.com/antirez/lua-cmsgpack.git
+[submodule "deps/gdbm"]
+	path = deps/gdbm
+	url = git://git.gnu.org.ua/gdbm.git
