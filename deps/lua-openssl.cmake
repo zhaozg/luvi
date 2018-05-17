@@ -38,6 +38,7 @@ add_library(lua_openssl
   ${LUA_OPENSSL_DIR}/src/compat.c
   ${LUA_OPENSSL_DIR}/src/crl.c
   ${LUA_OPENSSL_DIR}/src/csr.c
+  ${LUA_OPENSSL_DIR}/src/cosm2.c
   ${LUA_OPENSSL_DIR}/src/dh.c
   ${LUA_OPENSSL_DIR}/src/digest.c
   ${LUA_OPENSSL_DIR}/src/dsa.c
@@ -57,6 +58,7 @@ add_library(lua_openssl
   ${LUA_OPENSSL_DIR}/src/private.h
   ${LUA_OPENSSL_DIR}/src/rsa.c
   ${LUA_OPENSSL_DIR}/src/sk.h
+  ${LUA_OPENSSL_DIR}/src/sm2.c
   ${LUA_OPENSSL_DIR}/src/ssl.c
   ${LUA_OPENSSL_DIR}/src/th-lock.c
   ${LUA_OPENSSL_DIR}/src/util.c
