@@ -40,6 +40,8 @@ void  luaL_setfuncs(lua_State *L, const luaL_Reg *l, int nup);
 //misc, maybe changed high frequency,so keep it on last commit
 #include "misc/misc.c"
 
+#include "lgdbm.c"
+
 int luvi_custom(lua_State* L) {
   lua_pushcfunction(L, luaopen_time);
   lua_setfield(L, -2, "time");
@@ -68,5 +70,9 @@ int luvi_custom(lua_State* L) {
   lua_pushcfunction(L, luaopen_misc);
   lua_setfield(L, -2, "misc");
 
+  lua_pushcfunction(L, luaopen_gdbm);
+  lua_setfield(L, -2, "gdbm");
+
   return 0;
 }
+

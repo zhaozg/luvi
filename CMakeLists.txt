@@ -130,6 +130,7 @@ if (WithZLIB)
 endif (WithZLIB)
 
 if (WithCustomExtend)
+  include(deps/gdbm.cmake)
   set(custom custom/luvi_custom.c)
   if (MSVC)
     set(custom ${custom} 
