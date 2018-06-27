@@ -28,6 +28,10 @@ ENDIF("${isSystemDir}" STREQUAL "-1")
 include(deps/static.cmake)
 include(deps/portable.cmake)
 
+if(CMAKE_COMPILER_IS_GNUCC)
+  add_definitions( -Wno-unused-function)
+endif()
+
 if (EXISTS "VERSION")
   file (STRINGS "VERSION" LUVI_VERSION)
   message("-- Found luvi version: ${LUVI_VERSION}")
