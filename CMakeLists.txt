@@ -126,6 +126,11 @@ if (WithPCRE)
 endif (WithPCRE)
 
 if (WithLPEG)
+  set(LPEGLIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps/lpeg)
+  if(DEFINED ENV{LPEGLIB_DIR})
+    set(LPEGLIB_DIR $ENV{LPEGLIB_DIR})
+  endif()
+
   include (deps/lpeg.cmake)
 endif (WithLPEG)
 
@@ -137,7 +142,7 @@ if (WithCustomExtend)
   include(deps/gdbm.cmake)
   set(custom custom/luvi_custom.c)
   if (MSVC)
-    set(custom ${custom} 
+    set(custom ${custom}
       custom/winreg/src/l52util.c
       custom/winreg/src/luawin_dllerror.c
       custom/winreg/src/lua_int64.c
@@ -174,6 +179,9 @@ if (WITH_LUA_ENGINE STREQUAL Lua)
   add_definitions(-DWITH_PLAIN_LUA)
 endif ()
 
+if(LPEGLIB_DIR)
+  set(lpeg_re_lua ${LPEGLIB_DIR}/re.lua)
+endif()
 lua_add_executable(luvi
   ${winsvc}
   ${custom}
@@ -183,6 +191,7 @@ lua_add_executable(luvi
   src/lua/luvipath.lua
   src/lua/luvibundle.lua
   custom/luvi_custom.c
+  ${lpeg_re_lua}
 )
 
 if(APPLE)
