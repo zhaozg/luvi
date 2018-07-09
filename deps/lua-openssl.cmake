@@ -30,8 +30,9 @@ else()
 endif()
 
 add_library(lua_openssl
-  ${LUA_OPENSSL_DIR}/src/asn1.c
   ${LUA_OPENSSL_DIR}/deps/auxiliar/auxiliar.c
+  ${LUA_OPENSSL_DIR}/deps/auxiliar/subsidiar.c
+  ${LUA_OPENSSL_DIR}/src/asn1.c
   ${LUA_OPENSSL_DIR}/src/bio.c
   ${LUA_OPENSSL_DIR}/src/callback.c
   ${LUA_OPENSSL_DIR}/src/cipher.c
