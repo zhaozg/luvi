@@ -111,8 +111,13 @@ else (WithSharedLibluv)
   add_subdirectory(${LUV_DIR} luv.dir)
 endif (WithSharedLibluv)
 
+<<<<<<< HEAD
 set(LUA_COMPAT53_DIR ${LUV_DIR}/deps/lua-compat-5.3)
 if($ENV{LUA_COMPAT53_DIR})
+=======
+set(LUA_COMPAT53_DIR deps/luv/deps/lua-compat-5.3)
+if(DEFINED ENV{LUA_COMPAT53_DIR})
+>>>>>>> master
   set(LUA_COMPAT53_DIR $ENV{LUA_COMPAT53_DIR})
 endif()
 include_directories(${LUA_COMPAT53_DIR})
@@ -206,6 +211,7 @@ if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
   set(EXTRA_LIBS ${EXTRA_LIBS} rt)
 endif()
 
+<<<<<<< HEAD
 if("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
   set(EXTRA_LIBS ${EXTRA_LIBS} iconv)
 endif()
@@ -220,6 +226,10 @@ if(${CMAKE_C_COMPILER_ID} STREQUAL GNU)
     LINK_DEPENDS_NO_SHARED ON
   )
 endif()
+=======
+target_link_libraries(luvi ${LUVI_LIBRARIES} ${EXTRA_LIBS} ${CMAKE_THREAD_LIBS_INIT})
+set_target_properties(luvi PROPERTIES ENABLE_EXPORTS ON)
+>>>>>>> master
 
 ###############################################################################
 ## Installation Targets

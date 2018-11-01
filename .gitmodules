@@ -4,7 +4,7 @@
 	ignore = untracked
 [submodule "deps/lua-openssl"]
 	path = deps/lua-openssl
-	url = https://github.com/zhaozg/lua-openssl.git	
+	url = https://github.com/zhaozg/lua-openssl.git
 [submodule "deps/zlib"]
 	path = deps/zlib
 	url = https://github.com/madler/zlib.git
