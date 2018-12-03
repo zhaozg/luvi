@@ -4,10 +4,7 @@ if(DEFINED ENV{LUA_OPENSSL_DIR})
 endif()
 
 include_directories(
-<<<<<<< HEAD
-=======
   ${CMAKE_BINARY_DIR}/include
->>>>>>> master
   ${LUA_OPENSSL_DIR}/deps/auxiliar
   ${LUA_OPENSSL_DIR}/deps/lua-compat
   ${LUA_OPENSSL_DIR}/src
@@ -16,15 +13,12 @@ include_directories(
 add_definitions(
   -DCOMPAT52_IS_LUAJIT
 )
-<<<<<<< HEAD
 if(WithCustomExtend)
   add_definitions(
     -DCOMPAT52_IS_LUAJIT
     -DHAVE_USER_CUSTOME="custom.h"
   )
 endif()
-=======
->>>>>>> master
 
 if(WIN32)
   add_definitions(
@@ -85,16 +79,12 @@ set_target_properties(lua_openssl PROPERTIES COMPILE_FLAGS "-DLUA_LIB")
 if (WithSharedOpenSSL)
   target_link_libraries(lua_openssl ssl crypto)
 else (WithSharedOpenSSL)
-<<<<<<< HEAD
+  add_dependencies(lua_openssl openssl)
   if(WithOpenSSLExtends)
     target_link_libraries(lua_openssl openssl_extends)
   else()
     target_link_libraries(lua_openssl openssl)
   endif()
-=======
-  add_dependencies(lua_openssl openssl)
-  target_link_libraries(lua_openssl openssl_ssl openssl_crypto)
->>>>>>> master
 endif (WithSharedOpenSSL)
 
 set(EXTRA_LIBS ${EXTRA_LIBS} lua_openssl)
