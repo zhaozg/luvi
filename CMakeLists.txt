@@ -139,20 +139,13 @@ if (WithZLIB)
 endif (WithZLIB)
 
 if (WithCustomExtend)
-  include(deps/gdbm.cmake)
   set(custom custom/luvi_custom.c)
-  if (MSVC)
+  if (WIN32)
     set(custom ${custom}
-      custom/winreg/src/l52util.c
-      custom/winreg/src/luawin_dllerror.c
-      custom/winreg/src/lua_int64.c
-      custom/winreg/src/lua_mtutil.c
-      custom/winreg/src/lua_tstring.c
-      custom/winreg/src/winreg.c
-      custom/winreg/src/win_privileges.c
-      custom/winreg/src/win_registry.c
-      custom/winreg/src/win_trace.c
+      custom/winreg.c
     )
+  else()
+    include(deps/gdbm.cmake)
   endif()
   include_directories(deps/lua-openssl/deps/lua-compat/c-api)
   add_definitions(

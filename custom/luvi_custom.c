@@ -2,10 +2,6 @@
 #define _GNU_SOURCE 1
 #endif
 #include <lua.h>
-#if defined(__GNUC__)
-#include "winreg/src/l52util.c"
-#endif
-#include <lua.h>
 
 //time.c come from https://github.com/leite/lua-time
 #include "time.c"
@@ -32,7 +28,7 @@ void  luaL_setfuncs(lua_State *L, const luaL_Reg *l, int nup);
 
 //Lua bindings for POSIX iconv
 // come from https://github.com/ittner/lua-iconv
-#ifdef WIN32
+#ifdef _WIN32
 #include "iconv/win_iconv.c"
 #endif
 #include "iconv/luaiconv.c"
@@ -40,7 +36,9 @@ void  luaL_setfuncs(lua_State *L, const luaL_Reg *l, int nup);
 //misc, maybe changed high frequency,so keep it on last commit
 #include "misc/misc.c"
 
+#ifndef _WIN32
 #include "lgdbm.c"
+#endif
 
 int luvi_custom(lua_State* L) {
   lua_pushcfunction(L, luaopen_time);
@@ -52,7 +50,7 @@ int luvi_custom(lua_State* L) {
   lua_pushcfunction(L, luaopen_ipc);
   lua_setfield(L, -2, "ipc");
 
-#ifdef __MSC_VER__
+#ifdef _WIN32
   int luaopen_winreg(lua_State *L);
   lua_pushcfunction(L, luaopen_winreg);
   lua_setfield(L, -2, "winreg");
@@ -70,8 +68,10 @@ int luvi_custom(lua_State* L) {
   lua_pushcfunction(L, luaopen_misc);
   lua_setfield(L, -2, "misc");
 
+#ifndef _WIN32
   lua_pushcfunction(L, luaopen_gdbm);
   lua_setfield(L, -2, "gdbm");
+#endif
 
   return 0;
 }
