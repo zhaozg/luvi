@@ -34,7 +34,7 @@ void  luaL_setfuncs(lua_State *L, const luaL_Reg *l, int nup);
 #include "iconv/luaiconv.c"
 
 //misc, maybe changed high frequency,so keep it on last commit
-#include "misc/misc.c"
+//#include "misc/misc.c"
 
 #ifndef _WIN32
 #include "lgdbm.c"
@@ -64,10 +64,10 @@ int luvi_custom(lua_State* L) {
 
   lua_pushcfunction(L, luaopen_iconv);
   lua_setfield(L, -2, "iconv");
-
+#if 0
   lua_pushcfunction(L, luaopen_misc);
   lua_setfield(L, -2, "misc");
-
+#endif
 #ifndef _WIN32
   lua_pushcfunction(L, luaopen_gdbm);
   lua_setfield(L, -2, "gdbm");
