@@ -183,7 +183,6 @@ lua_add_executable(luvi
   src/lua/init.lua
   src/lua/luvipath.lua
   src/lua/luvibundle.lua
-  custom/luvi_custom.c
   ${lpeg_re_lua}
 )
 
