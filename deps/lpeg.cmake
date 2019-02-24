@@ -12,6 +12,5 @@ add_library(LPEGLIB
 
 set(EXTRA_LIBS ${EXTRA_LIBS} LPEGLIB)
 
-set_target_properties(LPEGLIB PROPERTIES COMPILE_FLAGS "-DWITH_LPEG")
 remove_definitions(-DNDEBUG)
 remove_definitions(-DVERSION)
