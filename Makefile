@@ -6,6 +6,7 @@ LUVI_PREFIX?=/usr/local
 LUVI_BINDIR?=$(LUVI_PREFIX)/bin
 
 OS:=$(shell uname -s)
+ARCH:=$(shell uname -m)
 
 CMAKE_FLAGS+= -H. -Bbuild -DCMAKE_BUILD_TYPE=Release
 ifdef GENERATOR
@@ -17,7 +18,6 @@ ifdef WITHOUT_AMALG
 endif
 
 WITH_SHARED_LIBLUV ?= OFF
-SHAREDSSL ?= OFF
 
 CMAKE_FLAGS += \
 	-DWithSharedLibluv=$(WITH_SHARED_LIBLUV)
@@ -64,10 +64,16 @@ tiny: deps/luv/CMakeLists.txt
 
 # Configure the build with openssl statically included
 regular: deps/luv/CMakeLists.txt
-	cmake $(CMAKE_FLAGS) $(CPACK_FLAGS) -DWithOpenSSL=ON -DWithSharedOpenSSL=$(SHAREDSSL) -DWithPCRE=ON -DWithLPEG=ON -DWithSharedPCRE=OFF -DWithCustomExtend=ON
+	cmake $(CMAKE_FLAGS) $(CPACK_FLAGS) -DWithOpenSSL=ON -DWithSharedOpenSSL=$(SHAREDSSL) \
+	-DWithPCRE=ON -DWithLPEG=ON -DWithSharedPCRE=OFF -DWithCustomExtend=ON
 
 regular-asm: deps/luv/CMakeLists.txt
-	cmake $(CMAKE_FLAGS) $(CPACK_FLAGS) -DWithOpenSSL=ON -DWithSharedOpenSSL=$(SHAREDSSL) -DWithOpenSSLASM=ON -DWithPCRE=ON -DWithLPEG=ON -DWithSharedPCRE=OFF -DWithCustomExtend=ON
+	cmake $(CMAKE_FLAGS) $(CPACK_FLAGS) -DWithOpenSSL=ON -DWithSharedOpenSSL=$(SHAREDSSL) \
+	-DWithOpenSSLASM=ON -DWithPCRE=ON -DWithLPEG=ON -DWithSharedPCRE=OFF -DWithCustomExtend=ON
+
+# Configure the build with shared openssl
+regular-shared:
+	cmake $(CMAKE_FLAGS) $(CPACK_FLAGS) -DWithOpenSSL=ON -DWithSharedOpenSSL=ON -DWithPCRE=ON -DWithLPEG=ON -DWithSharedPCRE=OFF
 
 package: deps/luv/CMakeLists.txt
 	cmake --build build -- package
@@ -104,6 +110,19 @@ luvi-src.tar.gz:
 	mv ../luvi-src.tar.gz . && \
 	rm VERSION
 
+
+travis-publish:	reset luvi-src.tar.gz travis-tiny travis-regular-asm
+	$(MAKE)
+	mv luvi-src.tar.gz luvi-src-${LUVI_TAG}.tar.gz
+
+travis-tiny: reset tiny
+	$(MAKE)
+	mv build/luvi luvi-tiny-$(OS)_$(ARCH)
+
+travis-regular-asm: reset regular-asm
+	$(MAKE)
+	mv build/luvi luvi-regular-$(OS)_$(ARCH)
+
 linux-build: linux-build-box-regular linux-build-box32-regular linux-build-box-tiny linux-build-box32-tiny
 
 linux-build-box-regular: luvi-src.tar.gz
@@ -118,7 +137,7 @@ linux-build-box32-regular: luvi-src.tar.gz
 	rm -rf build && mkdir -p build
 	cp packaging/holy-build.sh luvi-src.tar.gz build
 	docker run -t -i --rm \
-		  -v `pwd`/build:/io phusion/holy-build-box-32:latest bash /io/holy-build.sh regular-asm
+		  -v `pwd`/build:/io phusion/holy-build-box-32:latest linux32 bash /io/holy-build.sh regular-asm
 	mv build/luvi luvi-regular-Linux_i686
 
 linux-build-box-tiny: luvi-src.tar.gz
@@ -133,7 +152,7 @@ linux-build-box32-tiny: luvi-src.tar.gz
 	rm -rf build && mkdir -p build
 	cp packaging/holy-build.sh luvi-src.tar.gz build
 	docker run -t -i --rm \
-		  -v `pwd`/build:/io phusion/holy-build-box-32:latest bash /io/holy-build.sh tiny
+		  -v `pwd`/build:/io phusion/holy-build-box-32:latest linux32 bash /io/holy-build.sh tiny
 	mv build/luvi luvi-tiny-Linux_i686
 
 publish-src: reset luvi-src.tar.gz
