@@ -36,11 +36,15 @@ if (EXISTS "VERSION")
   file (STRINGS "VERSION" LUVI_VERSION)
   message("-- Found luvi version: ${LUVI_VERSION}")
 else()
-  exec_program(
-      "git"
-      ${CMAKE_CURRENT_SOURCE_DIR}
-      ARGS "describe" "--tags"
-      OUTPUT_VARIABLE LUVI_VERSION)
+  if (DEFINED ENV{LUVI_VERSION})
+    set(LUVI_VERSION $ENV{LUVI_VERSION})
+  else()
+    exec_program(
+        "git"
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ARGS "describe" "--tags"
+        OUTPUT_VARIABLE LUVI_VERSION)
+  endif()
   message("-- Found luvi git version: ${LUVI_VERSION}")
 endif()
 
