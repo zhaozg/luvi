@@ -113,7 +113,7 @@ static lua_State* vm_acquire(){
   lua_setfield(L, -2, "zlib");
 #endif
 
-#ifdef WITH_PLAIN_LUA
+#if defined(WITH_PLAIN_LUA) || defined(USE_LUA2C)
   {
       LUALIB_API int luaopen_init(lua_State *L);
       LUALIB_API int luaopen_luvibundle(lua_State *L);
@@ -125,6 +125,7 @@ static lua_State* vm_acquire(){
       lua_pushcfunction(L, luaopen_luvipath);
       lua_setfield(L, -2, "luvipath");
       luaL_requiref(L, "bit", luaopen_bit, 1);
+      lua_pop(L, 1);
   }
 #endif
 

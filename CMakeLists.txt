@@ -121,7 +121,7 @@ if(DEFINED ENV{LUA_COMPAT53_DIR})
 endif()
 include_directories(${LUA_COMPAT53_DIR})
 
-set(LUVI_COMPILE_FLAGS "")
+set(LUVI_DEFINITIONS)
 
 if (WithOpenSSL)
   include(deps/openssl.cmake)
@@ -138,7 +138,7 @@ if (WithLPEG)
   endif()
 
   include (deps/lpeg.cmake)
-  set(LUVI_COMPILE_FLAGS "${LUVI_COMPILE_FLAGS} -DWITH_LPEG")
+  list(APPEND LUVI_DEFINITIONS WITH_LPEG)
 endif (WithLPEG)
 
 if (WithZLIB)
@@ -151,11 +151,11 @@ if (WithCustomExtend)
     set(custom ${custom}
       custom/winreg.c
     )
-  else()
+  elseif (NOT ANDROID)
     include(deps/gdbm.cmake)
   endif()
   include_directories(deps/lua-openssl/deps/lua-compat/c-api)
-  set(LUVI_COMPILE_FLAGS "${LUVI_COMPILE_FLAGS} -DWITH_LPEG -DWITH_CUSTOM")
+  list(APPEND LUVI_DEFINITIONS WITH_CUSTOM)
   add_definitions(-DLUA_COMPAT53="c-api/compat-5.3.h")
 endif (WithCustomExtend)
 
@@ -163,10 +163,14 @@ add_definitions(-DLUVI_VERSION="${LUVI_VERSION}")
 
 if(MSVC)
   set(winsvc src/winsvc.h src/winsvcaux.h src/winsvc.c src/winsvcaux.c)
-  set(LUVI_COMPILE_FLAGS "${LUVI_COMPILE_FLAGS} -DWITH_WINSVC -DLUA_BUILD_AS_DLL -DBUILDING_UV_SHARED")
-  set(LUVI_COMPILE_FLAGS "${LUVI_COMPILE_FLAGS} -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_WARNINGS")
+  list(APPEND LUVI_DEFINITIONS WITH_WINSVC LUA_BUILD_AS_DLL BUILDING_UV_SHARED)
+  list(APPEND LUVI_DEFINITIONS _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_WARNINGS)
 
   add_library (luvi_renamed src/luvi_renamed.c)
+endif()
+
+if(USE_LUA2C)
+  list(APPEND LUVI_DEFINITIONS USE_LUA2C)
 endif()
 
 if(UNIX)
@@ -215,12 +219,12 @@ set_target_properties(luvi PROPERTIES ENABLE_EXPORTS ON)
 if(${CMAKE_C_COMPILER_ID} STREQUAL GNU)
   set_target_properties(luvi PROPERTIES
     LINK_FLAGS "-static-libgcc"
-    COMPILE_FLAGS ${LUVI_COMPILE_FLAGS}
+    COMPILE_DEFINITIONS "${LUVI_DEFINITIONS}"
     LINK_DEPENDS_NO_SHARED ON
   )
 else()
   set_target_properties(luvi PROPERTIES
-    COMPILE_FLAGS ${LUVI_COMPILE_FLAGS}
+    COMPILE_DEFINITIONS "${LUVI_DEFINITIONS}"
   )
 endif()
 

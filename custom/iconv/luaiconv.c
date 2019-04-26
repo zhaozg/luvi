@@ -75,7 +75,7 @@
 #define ERROR_FINALIZED     5
 
 
-
+#if !defined(__ANDROID__) || __ANDROID__API__ >= 28
 static void push_iconv_t(lua_State *L, iconv_t cd)
 {
     BOXPTR(L, cd);
@@ -220,14 +220,17 @@ static int Liconv_close(lua_State *L)
     return 1;
 }
 
+#endif // !defined(__ANDROID__) || __ANDROID__API__ >= 28
 
 static const luaL_Reg iconv_funcs[] = {
+#if !defined(__ANDROID__) || __ANDROID__API__ >= 28
     { "open",   Liconv_open },
     { "new",    Liconv_open },
     { "iconv",  Liconv },
 #ifdef HAS_ICONVLIST
     { "list",   Liconvlist },
 #endif
+#endif // !defined(__ANDROID__) || __ANDROID__API__ >= 28
     { NULL, NULL }
 };
 
@@ -252,10 +255,11 @@ int luaopen_iconv(lua_State *L)
     lua_pushvalue(L, -3);
     lua_settable(L, -3);
 
+#if defined(__ANDROID__)==0 || __ANDROID__API__ >= 28
     lua_pushliteral(L, "__gc");
     lua_pushcfunction(L, Liconv_close);
     lua_settable(L, -3);
-
+#endif
     lua_pop(L, 1);
 
     return 1;

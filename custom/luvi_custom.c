@@ -36,7 +36,7 @@ void  luaL_setfuncs(lua_State *L, const luaL_Reg *l, int nup);
 //misc, maybe changed high frequency,so keep it on last commit
 //#include "misc/misc.c"
 
-#ifndef _WIN32
+#if defined(_WIN32)==0 && !defined(__ANDROID__)
 #include "lgdbm.c"
 #endif
 
@@ -64,11 +64,13 @@ int luvi_custom(lua_State* L) {
 
   lua_pushcfunction(L, luaopen_iconv);
   lua_setfield(L, -2, "iconv");
+
 #if 0
   lua_pushcfunction(L, luaopen_misc);
   lua_setfield(L, -2, "misc");
 #endif
-#ifndef _WIN32
+
+#if defined(_WIN32)==0 && !defined(__ANDROID__)
   lua_pushcfunction(L, luaopen_gdbm);
   lua_setfield(L, -2, "gdbm");
 #endif
