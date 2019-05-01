@@ -30,9 +30,7 @@
 #include <string.h>
 #include <assert.h>
 
-#ifndef LUA_LIB
 #define LUA_LIB
-#endif
 #include "lua.h"
 #include "lauxlib.h"
 
@@ -58,7 +56,7 @@
 #endif
 #endif
 
-#include "sqlitext/src/sqlite3.h"
+#include "sqlite3.h"
 
 /* compile time features */
 #if !defined(SQLITE_OMIT_PROGRESS_CALLBACK)
@@ -1319,6 +1317,7 @@ static void db_update_hook_callback(void *user, int op, char const *dbname, char
     sdb *db = (sdb*)user;
     lua_State *L = db->L;
     int top = lua_gettop(L);
+    lua_Number n;
 
     /* setup lua callback call */
     lua_rawgeti(L, LUA_REGISTRYINDEX, db->update_hook_cb);    /* get callback */
