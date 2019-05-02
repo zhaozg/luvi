@@ -28,8 +28,8 @@ ENDIF("${isSystemDir}" STREQUAL "-1")
 include(deps/static.cmake)
 include(deps/portable.cmake)
 
-if(CMAKE_COMPILER_IS_GNUCC)
-  add_definitions( -Wno-unused-function)
+if(${CMAKE_C_COMPILER_ID} MATCHES "Clang" OR ${CMAKE_C_COMPILER_ID} MATCHES "GNU")
+  add_compile_options(-Wno-unused-function)
 endif()
 
 if (EXISTS "VERSION")
@@ -203,11 +203,11 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
   set(CMAKE_EXE_LINKER_FLAGS "-Wl,-E")
 endif()
 
-if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(EXTRA_LIBS ${EXTRA_LIBS} rt)
 endif()
 
-if("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
   set(EXTRA_LIBS ${EXTRA_LIBS} iconv)
 endif()
 

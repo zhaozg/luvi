@@ -402,7 +402,7 @@ static int lmz_compress(lua_State* L)
 
   out_len = mz_compressBound(in_len);
   outb = malloc(out_len);
-  ret = mz_compress2(outb, &out_len, inb, in_len, level);
+  ret = mz_compress2(outb, (mz_ulong*)&out_len, inb, in_len, level);
 
   switch (ret) {
     case MZ_OK:
@@ -430,7 +430,7 @@ static int lmz_uncompress(lua_State* L)
 
   out_len = in_len;
   outb = malloc(out_len);
-  ret = mz_uncompress(outb, &out_len, inb, in_len);
+  ret = mz_uncompress(outb, (mz_ulong*)&out_len, inb, in_len);
   switch (ret) {
     case MZ_OK:
       lua_pushlstring(L, (const char*)outb, out_len);
