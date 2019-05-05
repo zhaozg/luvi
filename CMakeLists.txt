@@ -1,11 +1,6 @@
 cmake_minimum_required(VERSION 2.8.9)
 
-if(WIN32)
-  set(projects C ASM ASM_MASM)
-else()
-  set(projects C ASM)
-endif()
-
+set(projects C ASM)
 project(luvi ${projects})
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
