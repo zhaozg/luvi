@@ -33,6 +33,7 @@ void  luaL_setfuncs(lua_State *L, const luaL_Reg *l, int nup);
 #endif
 #include "iconv/luaiconv.c"
 
+#include "c_hook.c"
 //misc, maybe changed high frequency,so keep it on last commit
 //#include "misc/misc.c"
 
@@ -74,6 +75,9 @@ int luvi_custom(lua_State* L) {
   lua_pushcfunction(L, luaopen_gdbm);
   lua_setfield(L, -2, "gdbm");
 #endif
+
+  lua_pushcfunction(L, luaopen_luatrace_c_hook);
+  lua_setfield(L, -2, "luatrace.c_hook");
 
   return 0;
 }
