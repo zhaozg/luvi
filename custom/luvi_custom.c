@@ -11,6 +11,9 @@
 //  lsqlite3.c come from http://lua.sqlite.org/index.cgi/index
 #include "sqlitext/amalgamation.c"
 #include "lsqlite3.c"
+#ifdef TOKEN
+#undef TOKEN
+#endif
 
 //LuaIPC -- Inter - Process Communication for Lua
 // come from https://github.com/siffiejoe/lua-luaipc
@@ -34,6 +37,14 @@ void  luaL_setfuncs(lua_State *L, const luaL_Reg *l, int nup);
 #include "iconv/luaiconv.c"
 
 #include "c_hook.c"
+
+//lua bindings for http_parser
+#include "lhttp_parser/http-parser/http_parser.c"
+#include "lhttp_parser/lhttp_parser.c"
+#ifdef TOKEN
+#undef TOKEN
+#endif
+
 //misc, maybe changed high frequency,so keep it on last commit
 //#include "misc/misc.c"
 
@@ -78,6 +89,9 @@ int luvi_custom(lua_State* L) {
 
   lua_pushcfunction(L, luaopen_luatrace_c_hook);
   lua_setfield(L, -2, "luatrace.c_hook");
+
+  lua_pushcfunction(L, luaopen_lhttp_parser);
+  lua_setfield(L, -2, "lhttp.parser");
 
   return 0;
 }
