@@ -178,9 +178,15 @@ endif()
 if(NOT LUA_FORGE_DIR)
   message(FATAL_ERROR "Please set LUA_FORGE_DIR")
 endif()
+
 set(BUNDLE_USE_LUA2C OFF)
-set(BUNDLE_CMD ${LUA_TARGET})
-message("BUNDLE_CMD ${BUNDLE_CMD}")
+if(CMAKE_CROSSCOMPILING)
+  set(BUNDLE_CMD wine)
+  set(BUNDLE_CMD_ARGS ${LUA_TARGET})
+else()
+  set(BUNDLE_CMD ${LUA_TARGET})
+endif()
+message("BUNDLE_CMD ${BUNDLE_CMD} ${BUNDLE_CMD_ARGS}")
 include(${LUA_FORGE_DIR}/cmake/Bundle.cmake)
 lua_add_executable(luvi
   ${winsvc}
