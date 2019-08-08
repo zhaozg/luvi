@@ -149,7 +149,7 @@ endif (WithCustomExtend)
 
 add_definitions(-DLUVI_VERSION="${LUVI_VERSION}")
 
-if(MSVC)
+if(WIN32)
   set(winsvc src/winsvc.h src/winsvcaux.h src/winsvc.c src/winsvcaux.c)
   list(APPEND LUVI_DEFINITIONS WITH_WINSVC LUA_BUILD_AS_DLL BUILDING_UV_SHARED)
   list(APPEND LUVI_DEFINITIONS _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_WARNINGS)
